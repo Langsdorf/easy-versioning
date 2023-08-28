@@ -1,19 +1,20 @@
-name: "Env Replace"
-description: "Change environment variables during actions"
+name: "Easy Versioning"
+description: "Change versions during actions"
 branding:
   icon: "settings"
   color: "blue"
 inputs:
-  key:
-    description: "env key"
+  input:
+    description: "initial version"
     required: true
-  value:
-    description: "env value"
-    required: true
-  file:
-    description: "env file path"
+  increment:
+    description: "major, minor or patch"
     required: false
-    default: ".env"
+    default: "patch"
+  value:
+    description: "how much to increment"
+    required: false
+    default: "1"
 runs:
   using: "node16"
   main: "dist/index.js"
