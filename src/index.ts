@@ -47,8 +47,6 @@ async function run() {
 		const increment = core.getInput("increment");
 		const value = core.getInput("value");
 
-		const [major, minor, patch] = input.split(".").map((v) => parseInt(v));
-
 		const newVersion = incrementVersion(
 			input,
 			increment || undefined,
