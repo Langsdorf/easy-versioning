@@ -3,36 +3,39 @@ import * as core from "@actions/core";
 export function incrementVersion(
 	input: string,
 	increment: string = "patch",
-	value: number = 1
+	value: string = "1"
 ) {
-	const [major, minor, patch] = input.split(".").map((v) => parseInt(v));
+	const [major, minor, patch] = input.split(".").map((v) => Number(v));
+	const valueToIncrement = Number.isNaN(Number(value)) ? 1 : Number(value);
+
+	core.info(`Current version is ${major}.${minor}.${patch}`);
 
 	let newVersion = "";
 
 	switch (increment) {
 		case "major":
-			newVersion = `${major + value}.0.0`;
+			newVersion = `${major + valueToIncrement}.0.0`;
 			break;
 		case "minor":
-			if (minor + value > 9) {
-				newVersion = `${major + value}.0.0`;
+			if (minor + valueToIncrement > 9) {
+				newVersion = `${major + valueToIncrement}.0.0`;
 			} else {
-				newVersion = `${major}.${minor + value}.0`;
+				newVersion = `${major}.${minor + valueToIncrement}.0`;
 			}
 			break;
 		case "patch":
-			if (patch + value > 9) {
-				if (minor + value > 9) {
-					newVersion = `${major + value}.0.0`;
+			if (patch + valueToIncrement > 9) {
+				if (minor + valueToIncrement > 9) {
+					newVersion = `${major + valueToIncrement}.0.0`;
 				} else {
-					newVersion = `${major}.${minor + value}.0`;
+					newVersion = `${major}.${minor + valueToIncrement}.0`;
 				}
 			} else {
-				newVersion = `${major}.${minor}.${patch + value}`;
+				newVersion = `${major}.${minor}.${patch + valueToIncrement}`;
 			}
 			break;
 		case "value":
-			newVersion = value.toString();
+			newVersion = valueToIncrement.toString();
 			break;
 		default:
 			throw new Error("Invalid increment type");
@@ -47,11 +50,7 @@ async function run() {
 		const increment = core.getInput("increment");
 		const value = core.getInput("value");
 
-		const newVersion = incrementVersion(
-			input,
-			increment || undefined,
-			value ? Number(value) : undefined
-		);
+		const newVersion = incrementVersion(input, increment || undefined, value);
 
 		core.info(`Successfully incremented version to ${newVersion}`);
 
